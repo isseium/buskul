@@ -1,5 +1,5 @@
-build
-build.log
-tmp
-._*
 .DS_Store
+build.log
+build
+npm-debug.log
+tmp

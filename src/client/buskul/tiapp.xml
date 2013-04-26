@@ -1,10 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ti:app xmlns:ti="http://ti.appcelerator.org">
+<?xml version="1.0" encoding="UTF-8"?><ti:app xmlns:ti="http://ti.appcelerator.org">
 	<id>net.ikmz.buskul</id>
 	<name>buskul</name>
 	<version>1.0</version>
 	<publisher>not specified</publisher>
-	<url></url>
+	<url/>
 	<description>not specified</description>
 	<copyright>not specified</copyright>
 	<icon>appicon.png</icon>
@@ -48,4 +47,6 @@
 		<target device="mobileweb">false</target>
 	</deployment-targets>
 	<sdk-version>3.0.3.v20130318143059</sdk-version>
+<plugins><plugin version="1.0">ti.alloy</plugin>
+</plugins>
 </ti:app>
