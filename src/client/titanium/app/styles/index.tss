@@ -1,8 +1,63 @@
-".container": {
-	backgroundColor:"white"
+
+// Wait
+"#waitWin": {
+   layout:'vertical',
+   backgroundImage: 'icons/background_64.png',
+   backgroundRepeat: 'true',
+},
+"#remainder_before": {
+  width: "100%",
+  height: "10%",
+  textAlign: Ti.UI.TEXT_ALIGNMENT_LEFT,
+},
+"#remainder_number": {
+  textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
+  font: {
+    fontSize: "224dp",
+  }
+},
+"#remainder_unit": {
+  width: "100%",
+  textAlign: Ti.UI.TEXT_ALIGNMENT_RIGHT,
+  bottom: "20%", 
+  right: "10%", 
+},
+"#remainderView": {
+  width: "100%",
+  height: "80%",
+}
+"#remainder_after": {
+  width: "100%",
+  height: "10%",
+  textAlign: Ti.UI.TEXT_ALIGNMENT_RIGHT,
 },
 "Label": {
-	width: Ti.UI.SIZE,
-	height: Ti.UI.SIZE,
-	color: "#000"
-} 
+  color: "black",
+  font: {
+    fontSize: "28dp",
+  }
+},
+// Setting
+"#settingWin": {
+   layout:'vertical',
+   backgroundImage: 'icons/background_64.png',
+   backgroundRepeat: 'true',
+},
+"#homeBusStopPicker": {
+  width: "100%",
+},
+"#homeBusStop_lbl": {
+  font: {
+    fontSize: "20dp",
+  }
+},
+"#homeBusStopPickerColumn": {
+//  width: "100%",
+},
+"PickerRow": {
+//  width: "100%",
+},
+".box":{
+  height: "20%",
+  width: "100%",
+}

@@ -1,5 +1,24 @@
 <Alloy>
-	<Window class="container">
-		<Label id="label" onClick="doClick">Hello, World</Label>
-	</Window>
+  <TabGroup backgroundColor="white" activeTab="waitTab">
+    <Tab id="waitTab" title="BUSKUL" icon="icons/bus_icon.png">
+      <Window id="waitWin" title="BUSKUL: 巣子">
+        <Label id="remainder_before">次のバスは</Label>
+        <View id="remainderView">
+          <Label id="remainder_number"></Label>
+          <Label id="remainder_unit">つ前</Label>
+        </View>
+        <Label id="remainder_after">のバス停にいます</Label>
+      </Window>
+    </Tab>
+    <Tab id="settingTab" title="設定" icon="icons/home_icon.png">
+      <Window id="settingWin" title="設定">
+        <View class="box">
+          <Label id="homeBusStop_lbl">最寄りのバス停を選んでください</Label>
+        </View>
+        <Picker id="homeBusStopPicker" selectionIndicator="true" useSpinner="true">
+          <PickerColumn id="homeBusStopPickerColumn" />
+        </Picker>
+      </Window>
+    </Tab>
+  </TabGroup>
 </Alloy>
