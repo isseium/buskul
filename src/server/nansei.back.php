@@ -49,7 +49,7 @@
 		array(618,"岩手県立大学入口"),
 		array(619,"岩手県立大学")
 		);
-
+	
 	$startpoint = $_GET['startpoint']; //241 = 盛岡駅
 	$endpoint = $_GET['endpoint']; //619 = 岩手県立大学
 	$url = "http://gps.iwatebus.or.jp/bls/pc/busiti_jk.jsp?jjg=1&"
@@ -57,15 +57,15 @@
 		."&kjg=2&"
 		."ktr=".$endpoint //降車
 		."&don=1";
-	/*
-	$startpoint = 177;// = 盛岡駅
+		/*
+	$startpoint = 616;// = 盛岡駅
 	$endpoint = 619;// = 岩手県立大学
 	$url = "http://172.16.134.92/~ryousuke/APPfog/busapp/2/%E3%83%8F%E3%82%99%E3%82%B9%E4%BD%8D%E7%BD%AE.html?jjg=1&"
 		."jtr=".$startpoint //乗車
 		."&kjg=2&"
 		."ktr=".$endpoint //降車
-		."&don=1";
-	*/
+		."&don=1";*/
+	
 	if(empty($startpoint) || empty($endpoint)){ //ゲットで値がない場合
 		$respons = "<remaining>NULL</remaining>";//バスデータなし
 	}
@@ -91,13 +91,16 @@
 	
 	//到着した時の判定
 	foreach($wsql2->fetch_array() as $row){
+    	//echo $row["text"];
+		//echo "<br />";
+		
 		$bus[0]['flag'] = 0;
 		$bus[0]['id'] = $startpoint;
 		//乗車地点をさがす。
 		foreach ($station as $key => $value) {
 			if($value[0] == $startpoint){//idが一致する
 				$bus[0]['name'] = $value[1];
-				for ($i=$key; $i >= 0; $i--) { 
+				for ($i=0; $i <= $key; $i++) { 
 					$tmp[$i]['id'] = $station[$i][0]; //id
 					$tmp[$i]['name'] = $station[$i][1]; //name
 				}
@@ -108,55 +111,108 @@
 			break;
 		}
     }
-	$n = count($tmp) -2;
-	$l = $n - 6;
+	krsort($tmp);/*
+	foreach ($tmp as $key => $value) {
+		echo $key;
+		echo "/";
+		echo $value['flag'];
+		echo ":";
+		echo $value['id'];
+				echo ":";
+		echo $value['name'];
+		echo "<br />";		
+	}
+	
+	echo "<hr>";
+	*/
 	//一つ前のバス停までの判定
-	$limit = count($wsql->fetch_array());
+	$n = count($tmp);
+	$count = 1;
 	foreach($wsql->fetch_array() as $row){
+    	//echo $row["text"];
+		//echo "<br />";
 		if(strstr($row["text"], '<img src=')){
 			$result = preg_split("/&nbsp;/",$row["text"]); //分割	
 			preg_match("/[0-9]/",$result[1],$match); //"４つ前" とかから数字だけ取り出す
-			$bus[$limit]['flag'] = 1;
+			$bus[$count]['flag'] = 1;
 		}else{
-			$bus[$limit]['flag'] = 0;
+			$bus[$count]['flag'] = 0;
 		}
+
 		//バス停の名前をidを取得
 		foreach ($station as $key => $value) {
 			if($value[0] == $startpoint){
 				$bus[0]['name'] = $value[1];
 			}
 		}
-		$bus[$limit]['id'] = $tmp[$l]['id'];
-		$bus[$limit]['name'] = $tmp[$l]['name'];
-		$l++;
-		$limit--;
+		$bus[$count]['id'] = $tmp[$n-2]['id'];
+		$bus[$count]['name'] = $tmp[$n-2]['name'];
+		$n--;
+		$count++;
     }
-	krsort($bus);
+	
+	//sort($bus);
+
+	
+	krsort($bus); //配列を組み直す
+	//var_dump($bus);
+	/*
+	foreach ($bus as $key => $value){
+		echo $key;
+		echo "/";
+		echo $value['flag'];
+		echo ":";
+		echo $value['id'];
+				echo ":";
+		echo $value['name'];
+		echo "<br />";		
+	}*/
+	// 例) array(8) { [7]=> int(0) [6]=> int(1) [5]=> int(0) [4]=> int(0) [3]=> int(0) [2]=> int(1) [1]=> int(0) [0]=> int(0) } 
+	//一番近い場所の情報を持ってくる
 	$nowpoint = 100; //データなしフラグ
 	foreach ($bus as $key => $value){
 		if($value['flag'] == 1){ //バスがいるバス停を探す
-			$nowpoint = $key; //なんこ待ちか
-			$nowid = $value['id']; //今バスがいるバス停id
-			$nowname = $value['name']; //今バスがいるバス停名
+			$nowpoint = $key; //バス停の番号
 		}else{ //バスがいないときはスキップ
 			continue;
 		}
 	}
 	if($nowpoint == 100){ //全てのバス停にいない
 		$respons = "<remaining>NULL</remaining>";//バスデータなし
-		$responsid = null;
-		$responsname = null;
 	}else{
 		$respons = "<remaining>".$nowpoint."</remaining>";
-		$responsid = "<id>".$nowid."</id>";
-		$responsname = "<name>".$nowname."</name>";
 	}
+	//echo "<hr>";
+	//echo $nowpoint;
+	/*echo $respons;
+	//var_dump($wsql);
+    // show results:
+    $result = null; //初期化
+    	echo "<hr>";
+    
+	echo "<hr>";
+	echo $result[1];
+	//var_dump($result);
+	echo "<hr>";
+	echo $row['text'];
+	//echo $match[0];
+	//echo $result[1];
+
+	if($result != 1){//データがある(８つ前〜０つ前)
+		$respons = null;
+		if(!empty($match[0])){//バスがあれば
+			$respons = "<remaining>".$match[0]."</remaining>";
+		}else{
+			$respons = "<remaining>". 0 ."</remaining>";
+		}
+	}else{//データなし
+		$respons = "<remaining>NULL</remaining>";
+	}*/
+	//echo $respons;
 	
-	header("Content-Type: text/json");
+	//header("Content-Type: text/json");
 	$xml = '<?xml version="1.0" encoding="utf-8"?><Response><busstop>'.
 	$respons.
-	$responsid.
-	$responsname.
 	'</busstop></Response>';
 	//echo $xml;
 	$data = simplexml_load_string($xml);

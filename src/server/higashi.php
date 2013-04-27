@@ -9,8 +9,8 @@
 		array(599,"盛岡城跡公園"),
 		array(439,"菜園川徳前"),
 		array(257,"柳新道"),
-		array(45,"開運箸"),
-		array(241,"盛岡駅"),
+		array(45,"開運橋"),
+		array(241,"盛岡駅前"),
 		array(9,"旭橋"),
 		array(263,"夕顔瀬橋"),
 		array(48,"片原"),
@@ -43,8 +43,8 @@
 	//
 	//var_dump($station);
 	foreach ($station as $key => $value) {
-		$xml .=	'<busstop><id>'. ($key+1) .'</id>
-			<order_id>'. $value[0] .'</order_id>
+		$xml .=	'<busstop><id>'. $value[0] .'</id>
+			<order_id>'. ($key+1) .'</order_id>
 			<name>'.$value[1].'</name>
 		</busstop>';
 	}

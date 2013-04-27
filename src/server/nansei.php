@@ -50,6 +50,8 @@
 		array(619,"岩手県立大学")
 		);
 
+	//$startpoint = 177;// = 盛岡駅
+	//$endpoint = 619;// = 岩手県立大学	
 	$startpoint = $_GET['startpoint']; //241 = 盛岡駅
 	$endpoint = $_GET['endpoint']; //619 = 岩手県立大学
 	$url = "http://gps.iwatebus.or.jp/bls/pc/busiti_jk.jsp?jjg=1&"
@@ -91,6 +93,9 @@
 	
 	//到着した時の判定
 	foreach($wsql2->fetch_array() as $row){
+    	//echo $row["text"];
+		//echo "<br />";
+		
 		$bus[0]['flag'] = 0;
 		$bus[0]['id'] = $startpoint;
 		//乗車地点をさがす。
@@ -108,11 +113,30 @@
 			break;
 		}
     }
+	//krsort($tmp);
+	/*
+	foreach ($tmp as $key => $value) {
+		echo $key;
+		echo "/";
+		echo $value['flag'];
+		echo ":";
+		echo $value['id'];
+				echo ":";
+		echo $value['name'];
+		echo "<br />";		
+	}*/
 	$n = count($tmp) -2;
 	$l = $n - 6;
+	/*echo $n;
+	echo ":";
+	echo $l;
+	echo "<hr>";
+	*/
 	//一つ前のバス停までの判定
 	$limit = count($wsql->fetch_array());
 	foreach($wsql->fetch_array() as $row){
+    	//echo $row["text"];
+		//echo "<br />";
 		if(strstr($row["text"], '<img src=')){
 			$result = preg_split("/&nbsp;/",$row["text"]); //分割	
 			preg_match("/[0-9]/",$result[1],$match); //"４つ前" とかから数字だけ取り出す
@@ -120,6 +144,7 @@
 		}else{
 			$bus[$limit]['flag'] = 0;
 		}
+
 		//バス停の名前をidを取得
 		foreach ($station as $key => $value) {
 			if($value[0] == $startpoint){
@@ -131,7 +156,47 @@
 		$l++;
 		$limit--;
     }
+	
 	krsort($bus);
+
+	
+	
+	//var_dump($bus);
+	
+	foreach ($bus as $key => $value){
+		echo $key;
+		echo "/";
+		echo $value['flag'];
+		echo ":";
+		echo $value['id'];
+				echo ":";
+		echo $value['name'];
+		echo "<br />";		
+	}
+	var_dump($bus);
+	
+	
+	// 作成するファイル名の指定
+	$file_name = 'data/file.txt';
+	// ファイルの存在確認
+	if( !file_exists($file_name) ){
+		// ファイル作成
+		touch( $file_name );
+		  // ファイルのパーティションの変更
+  		chmod( $file_name, 0666 );
+ 	 }else{
+ 	 	ob_start();
+    	var_dump($bus);
+    	$result =ob_get_contents();
+    	ob_end_clean();
+    	$fp = fopen("data/file.txt", "a+" );
+    	fputs($fp, $result);
+    	fclose( $fp );
+  	}
+	
+	
+	// 例) array(8) { [7]=> int(0) [6]=> int(1) [5]=> int(0) [4]=> int(0) [3]=> int(0) [2]=> int(1) [1]=> int(0) [0]=> int(0) } 
+	//一番近い場所の情報を持ってくる
 	$nowpoint = 100; //データなしフラグ
 	foreach ($bus as $key => $value){
 		if($value['flag'] == 1){ //バスがいるバス停を探す
@@ -152,7 +217,7 @@
 		$responsname = "<name>".$nowname."</name>";
 	}
 	
-	header("Content-Type: text/json");
+	//header("Content-Type: text/json");
 	$xml = '<?xml version="1.0" encoding="utf-8"?><Response><busstop>'.
 	$respons.
 	$responsid.
@@ -161,5 +226,5 @@
 	//echo $xml;
 	$data = simplexml_load_string($xml);
 	$json = json_encode($data);
-	echo $json;
+	//echo $json;
 ?>
